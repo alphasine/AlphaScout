@@ -4,10 +4,10 @@
 
 <div align="center">
 
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/nanobrowser)
-[![Twitter](https://img.shields.io/badge/Twitter-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/nanobrowser_ai)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/alphasine/AlphaScout)
+[![Twitter](https://img.shields.io/badge/Twitter-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/alphasine)
 [![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/NN3ABHggMK)
-[<img src="https://deepwiki.com/badge.svg" height="28" alt="Ask DeepWiki">](https://deepwiki.com/nanobrowser/nanobrowser)
+[<img src="https://deepwiki.com/badge.svg" height="28" alt="Ask DeepWiki">](https://deepwiki.com/alphasine/AlphaScout)
 
 </div>
 
@@ -15,9 +15,9 @@
 
 AlphaScout, tarayıcınızda çalışan açık kaynaklı bir yapay zeka tarayıcı otomasyon aracıdır. Esnek LLM seçenekleri ve çoklu ajan sistemiyle birlikte OpenAI Operator’a ücretsiz bir alternatiftir.
 
-⬇️ [AlphaScout’ı Chrome Web Mağazası’ndan ücretsiz edinin](https://chromewebstore.google.com/detail/nanobrowser/imbddededgmcgfhfpcjmijokokekbkal)
+⬇️ [AlphaScout’ı Chrome Web Mağazası’ndan ücretsiz edinin](https://chromewebstore.google.com/detail/TBD)
 
-👏 Topluluğa katılın: [Discord](https://discord.gg/NN3ABHggMK) | [X](https://x.com/nanobrowser_ai)
+👏 Topluluğa katılın: [Discord](https://discord.gg/NN3ABHggMK) | [X](https://x.com/alphasine)
 
 ❤️ AlphaScout’ı sevdiniz mi? Bize bir yıldız ⭐ verin ve yayılmasına yardımcı olun!
 
@@ -60,7 +60,7 @@ OpenAI Operator'ın aylık 200 dolarlık ücretinden kurtulmak mı istiyorsunuz?
 ## 🚀 Hızlı Başlangıç
 
 1. **Chrome Web Mağazası’ndan Kurulum** (Kararlı Sürüm):
-   * [AlphaScout Chrome Web Mağazası sayfasına](https://chromewebstore.google.com/detail/nanobrowser/imbddededgmcgfhfpcjmijokokekbkal) gidin
+   * [AlphaScout Chrome Web Mağazası sayfasına](https://chromewebstore.google.com/detail/TBD) gidin
    * "Chrome’a Ekle" butonuna tıklayın
    * Kurulumu onaylayın
 
@@ -77,14 +77,14 @@ OpenAI Operator'ın aylık 200 dolarlık ücretinden kurtulmak mı istiyorsunuz?
 En yeni özellikleri içeren en güncel sürümü kurmak için:
 
 1. **İndirin**
-    * Resmi Github [sürüm sayfasından](https://github.com/nanobrowser/nanobrowser/releases) en güncel `nanobrowser.zip` dosyasını indirin
+    * Resmi Github [sürüm sayfasından](https://github.com/alphasine/AlphaScout/releases) en güncel `alphascout.zip` dosyasını indirin
 
 2. **Kurulum**:
-    * `nanobrowser.zip` dosyasını çıkarın
+    * `alphascout.zip` dosyasını çıkarın
     * Chrome'da `chrome://extensions/` adresine gidin
     * Sağ üstten `Geliştirici modu`nu etkinleştirin
     * Sol üstte `Paketlenmemişi yükle`ye tıklayın
-    * Çıkardığınız `nanobrowser` klasörünü seçin
+    * Çıkardığınız `alphascout` klasörünü seçin
 
 3. **Ajan Modellerini Yapılandırın**
     * AlphaScout simgesine tıklayarak yan paneli açın
@@ -93,7 +93,7 @@ En yeni özellikleri içeren en güncel sürümü kurmak için:
     * Ajanlara model atayın (Navigator, Planner)
 
 4. **Güncelleme**:
-    * Yeni `nanobrowser.zip` dosyasını indirin
+    * Yeni `alphascout.zip` dosyasını indirin
     * Mevcut AlphaScout dosyalarını yenileriyle değiştirin
     * `chrome://extensions/` sayfasına gidip AlphaScout kartındaki yenile simgesine tıklayın
 
@@ -107,8 +107,8 @@ AlphaScout’ı kendiniz derlemek isterseniz şu adımları izleyin:
 
 2. **Depoyu Klonlayın**:
    ```bash
-   git clone https://github.com/nanobrowser/nanobrowser.git
-   cd nanobrowser
+   git clone https://github.com/alphasine/AlphaScout.git
+   cd AlphaScout
    ```
 
 3. **Bağımlılıkları Yükleyin**:
@@ -206,7 +206,7 @@ Sadece bir cümleyle gerçekleştirebileceğiniz güçlü görevlerden bazılar�
 
 AlphaScout için heyecan verici yeni özellikler geliştiriyoruz, katılmak ister misiniz?
 
-Detaylı yol haritamıza ve gelecek özelliklere [GitHub Discussions](https://github.com/nanobrowser/nanobrowser/discussions/85) üzerinden göz atabilirsiniz.
+Detaylı yol haritamıza ve gelecek özelliklere [GitHub Discussions](https://github.com/alphasine/AlphaScout/discussions/85) üzerinden göz atabilirsiniz.
 
 ## 🤝 Katkıda Bulunun
 
@@ -230,7 +230,7 @@ Açık kaynak ve topluluk iş birliğine inanıyoruz. Tarayıcı otomasyonunun g
 
 Bir güvenlik açığı keşfederseniz, lütfen bunu açık şekilde **issue, pull request veya discussion** yoluyla paylaşmayın.
 
-Bunun yerine, [GitHub Güvenlik Danışma Sayfası](https://github.com/nanobrowser/nanobrowser/security/advisories/new) üzerinden özel olarak bildirin. Böylece açığı kamuya açıklanmadan önce düzeltme şansı buluruz.
+Bunun yerine, [GitHub Güvenlik Danışma Sayfası](https://github.com/alphasine/AlphaScout/security/advisories/new) üzerinden özel olarak bildirin. Böylece açığı kamuya açıklanmadan önce düzeltme şansı buluruz.
 
 AlphaScout’ı ve kullanıcılarını güvende tutmaya yardım ettiğiniz için teşekkür ederiz!
 
@@ -239,8 +239,8 @@ AlphaScout’ı ve kullanıcılarını güvende tutmaya yardım ettiğiniz için
 Giderek büyüyen geliştirici ve kullanıcı topluluğumuza katılın:
 
 * [Discord](https://discord.gg/NN3ABHggMK) – Ekip ve toplulukla sohbet edin
-* [Twitter](https://x.com/nanobrowser_ai) – Güncellemeler ve duyurular
-* [GitHub Discussions](https://github.com/nanobrowser/nanobrowser/discussions) – Fikirlerinizi paylaşın ve sorular sorun
+* [Twitter](https://x.com/alphasine) – Güncellemeler ve duyurular
+* [GitHub Discussions](https://github.com/alphasine/AlphaScout/discussions) – Fikirlerinizi paylaşın ve sorular sorun
 
 ## 👏 Teşekkürler
 
@@ -259,7 +259,7 @@ Bu proje Apache License 2.0 ile lisanslanmıştır – detaylar için [LICENSE](
 
 Sevgiyle yapıldı ❤️ AlphaScout Ekibi tarafından.
 
-AlphaScout’ı sevdiniz mi? Bize bir yıldız 🌟 verin ve topluluğumuza katılın: [Discord](https://discord.gg/NN3ABHggMK) | [X](https://x.com/nanobrowser_ai)
+AlphaScout’ı sevdiniz mi? Bize bir yıldız 🌟 verin ve topluluğumuza katılın: [Discord](https://discord.gg/NN3ABHggMK) | [X](https://x.com/alphasine)
 
 ---
 

@@ -5,8 +5,8 @@
 
 <div align="center">
 
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/nanobrowser)
-[![Twitter](https://img.shields.io/badge/Twitter-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/nanobrowser_ai)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/alphasine/AlphaScout)
+[![Twitter](https://img.shields.io/badge/Twitter-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/alphasine)
 [![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/NN3ABHggMK)
 
 </div>
@@ -15,9 +15,9 @@
 
 AlphaScout es una herramienta de automatización web con IA que se ejecuta en tu navegador. Es una alternativa gratuita a OpenAI Operator, con opciones flexibles de modelos de lenguaje (LLM) y un sistema multiagente.
 
-⬇️ Descarga [AlphaScout desde Chrome Web Store](https://chromewebstore.google.com/detail/nanobrowser/imbddededgmcgfhfpcjmijokokekbkal) gratis
+⬇️ Descarga [AlphaScout desde Chrome Web Store](https://chromewebstore.google.com/detail/TBD) gratis
 
-👏 Únete a la comunidad en [Discord](https://discord.gg/NN3ABHggMK) | [X](https://x.com/nanobrowser_ai)
+👏 Únete a la comunidad en [Discord](https://discord.gg/NN3ABHggMK) | [X](https://x.com/alphasine)
 
 ❤️ ¿Te encanta AlphaScout? ¡Danos una estrella 🌟 y ayúdanos a correr la voz!
 
@@ -51,7 +51,7 @@ AlphaScout es una herramienta de automatización web con IA que se ejecuta en tu
 ## 🚀 Inicio Rápido
 
 1. **Instala desde Chrome Web Store** (Versión Estable):
-   * Visita la [página de AlphaScout en Chrome Web Store](https://chromewebstore.google.com/detail/nanobrowser/imbddededgmcgfhfpcjmijokokekbkal)
+   * Visita la [página de AlphaScout en Chrome Web Store](https://chromewebstore.google.com/detail/TBD)
    * Haz clic en el botón "Añadir a Chrome"
    * Confirma la instalación cuando se te solicite
 
@@ -68,14 +68,14 @@ AlphaScout es una herramienta de automatización web con IA que se ejecuta en tu
 Para obtener la versión más reciente con todas las funciones nuevas:
 
 1. **Descargar**
-    * Descarga el archivo `nanobrowser.zip` más reciente desde la [página de lanzamientos](https://github.com/nanobrowser/nanobrowser/releases) oficial en GitHub.
+    * Descarga el archivo `alphascout.zip` más reciente desde la [página de lanzamientos](https://github.com/alphasine/AlphaScout/releases) oficial en GitHub.
 
 2. **Instalar**:
-    * Extrae el archivo `nanobrowser.zip`.
+    * Extrae el archivo `alphascout.zip`.
     * Abre `chrome://extensions/` en Chrome
     * Habilita el `Modo de desarrollador` (arriba a la derecha)
     * Haz clic en `Cargar extensión sin empaquetar` (arriba a la izquierda)
-    * Selecciona la carpeta descomprimida de `nanobrowser`.
+    * Selecciona la carpeta descomprimida de `alphascout`.
 
 3. **Configurar Modelos de Agente**
     * Haz clic en el icono de AlphaScout en la barra de herramientas para abrir el panel lateral
@@ -84,7 +84,7 @@ Para obtener la versión más reciente con todas las funciones nuevas:
     * Elige qué modelo usar para cada agente (Navigator, Planner)
 
 4. **Actualizar**:
-    * Descarga el archivo `nanobrowser.zip` más reciente desde la página de lanzamientos.
+    * Descarga el archivo `alphascout.zip` más reciente desde la página de lanzamientos.
     * Extrae y reemplaza los archivos existentes de AlphaScout con los nuevos.
     * Ve a `chrome://extensions/` en Chrome y haz clic en el icono de actualizar en la tarjeta de AlphaScout.
 
@@ -98,8 +98,8 @@ Si prefieres compilar AlphaScout por ti mismo, sigue estos pasos:
 
 2. **Clonar el Repositorio**:
    ```bash
-   git clone https://github.com/nanobrowser/nanobrowser.git
-   cd nanobrowser
+   git clone https://github.com/alphasine/AlphaScout.git
+   cd AlphaScout
    ```
 
 3. **Instalar Dependencias**:
@@ -180,7 +180,7 @@ Aquí tienes algunas tareas poderosas que puedes realizar con solo una frase:
 
 Estamos desarrollando activamente AlphaScout con características emocionantes en el horizonte. ¡Te invitamos a unirte!
 
-Consulta nuestra hoja de ruta detallada y las características próximas en nuestras [Discusiones de GitHub](https://github.com/nanobrowser/nanobrowser/discussions/85). 
+Consulta nuestra hoja de ruta detallada y las características próximas en nuestras [Discusiones de GitHub](https://github.com/alphasine/AlphaScout/discussions/85). 
 
 ## 🤝 Contribuciones
 
@@ -203,7 +203,7 @@ Creemos en el poder del código abierto y la colaboración comunitaria. ¡Únete
 
 Si descubres una vulnerabilidad de seguridad, por favor **NO** la divulgues públicamente a través de issues, pull requests, o discusiones.
 
-En su lugar, por favor crea un [GitHub Security Advisory](https://github.com/nanobrowser/nanobrowser/security/advisories/new) para reportar la vulnerabilidad de forma responsable. Esto nos permite abordar el problema antes de que se divulgue públicamente.
+En su lugar, por favor crea un [GitHub Security Advisory](https://github.com/alphasine/AlphaScout/security/advisories/new) para reportar la vulnerabilidad de forma responsable. Esto nos permite abordar el problema antes de que se divulgue públicamente.
 
 ¡Agradecemos tu ayuda para mantener AlphaScout y sus usuarios seguros!
 
@@ -212,8 +212,8 @@ En su lugar, por favor crea un [GitHub Security Advisory](https://github.com/nan
 Únete a nuestra creciente comunidad de desarrolladores y usuarios:
 
 - [Discord](https://discord.gg/NN3ABHggMK) - Habla con el equipo y la comunidad
-- [Twitter](https://x.com/nanobrowser_ai) - Síguenos para actualizaciones y anuncios
-- [GitHub Discussions](https://github.com/nanobrowser/nanobrowser/discussions) - Comparte ideas y realiza preguntas
+- [Twitter](https://x.com/alphasine) - Síguenos para actualizaciones y anuncios
+- [GitHub Discussions](https://github.com/alphasine/AlphaScout/discussions) - Comparte ideas y realiza preguntas
 
 ## 👏 Agradecimientos
 
@@ -233,4 +233,4 @@ Este proyecto está bajo la Licencia Apache 2.0 - consulta el archivo [LICENSE](
 
 Hecho con ❤️ por el equipo de AlphaScout.
 
-¿Te gusta AlphaScout? ¡Danos una estrella 🌟 y únete a nosotros en [Discord](https://discord.gg/NN3ABHggMK) | [X](https://x.com/nanobrowser_ai)
+¿Te gusta AlphaScout? ¡Danos una estrella 🌟 y únete a nosotros en [Discord](https://discord.gg/NN3ABHggMK) | [X](https://x.com/alphasine)

@@ -84,7 +84,7 @@ Looking for a powerful AI browser agent without the $200/month price tag of Open
 To get the most recent version with all the latest features:
 
 1. **Download**
-    * Download the latest `alphascout.zip` file from the official Github [release page](https://github.com/alphascout/alphascout/releases).
+    * Download the latest `alphascout.zip` file from the official GitHub [release page](https://github.com/alphasine/AlphaScout/releases).
 
 2. **Install**:
     * Unzip `alphascout.zip`.
@@ -114,8 +114,8 @@ If you prefer to build AlphaScout yourself, follow these steps:
 
 2. **Clone the Repository**:
    ```bash
-   git clone https://github.com/alphascout/alphascout.git
-   cd alphascout
+   git clone https://github.com/alphasine/AlphaScout.git
+   cd AlphaScout
    ```
 
 3. **Install Dependencies**:

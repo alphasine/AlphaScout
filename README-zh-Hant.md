@@ -5,10 +5,10 @@
 
 <div align="center">
 
-[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/nanobrowser)
-[![Twitter](https://img.shields.io/badge/Twitter-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/nanobrowser_ai)
+[![GitHub](https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white)](https://github.com/alphasine/AlphaScout)
+[![Twitter](https://img.shields.io/badge/Twitter-000000?style=for-the-badge&logo=x&logoColor=white)](https://x.com/alphasine)
 [![Discord](https://img.shields.io/badge/Discord-5865F2?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/NN3ABHggMK)
-[<img src="https://deepwiki.com/badge.svg" height="28" alt="Ask DeepWiki">](https://deepwiki.com/nanobrowser/nanobrowser)
+[<img src="https://deepwiki.com/badge.svg" height="28" alt="Ask DeepWiki">](https://deepwiki.com/alphasine/AlphaScout)
 
 </div>
 
@@ -16,9 +16,9 @@
 
 AlphaScout 是一款在瀏覽器中執行的開放原始碼 AI 網頁自動化工具。作為 OpenAI Operator 的免費替代方案，提供彈性的 LLM 選項與多代理系統。
 
-⬇️ 從 [Chrome 線上應用程式商店](https://chromewebstore.google.com/detail/nanobrowser/imbddededgmcgfhfpcjmijokokekbkal) 免費取得 AlphaScout
+⬇️ 從 [Chrome 線上應用程式商店](https://chromewebstore.google.com/detail/TBD) 免費取得 AlphaScout
 
-👏 加入我們的 [Discord](https://discord.gg/NN3ABHggMK) | [X](https://x.com/nanobrowser_ai) 社群
+👏 加入我們的 [Discord](https://discord.gg/NN3ABHggMK) | [X](https://x.com/alphasine) 社群
 
 ❤️ 喜歡 AlphaScout 嗎？請給我們一顆星星 🌟 並協助分享！
 
@@ -64,7 +64,7 @@ AlphaScout 是一款在瀏覽器中執行的開放原始碼 AI 網頁自動化�
 ## 🚀 快速入門
 
 1. **從 Chrome 線上應用程式商店安裝** (穩定版)：
-   * 前往 [AlphaScout 的 Chrome 線上應用程式商店頁面](https://chromewebstore.google.com/detail/nanobrowser/imbddededgmcgfhfpcjmijokokekbkal)
+   * 前往 [AlphaScout 的 Chrome 線上應用程式商店頁面](https://chromewebstore.google.com/detail/TBD)
    * 按一下 [新增至 Chrome] 按鈕
    * 在提示出現時確認安裝
 
@@ -81,14 +81,14 @@ AlphaScout 是一款在瀏覽器中執行的開放原始碼 AI 網頁自動化�
 若要取得包含所有最新功能的版本：
 
 1. **下載**
-    * 從官方 GitHub 的 [版本頁面](https://github.com/nanobrowser/nanobrowser/releases) 下載最新的 `nanobrowser.zip` 檔案。
+    * 從官方 GitHub 的 [版本頁面](https://github.com/alphasine/AlphaScout/releases) 下載最新的 `alphascout.zip` 檔案。
 
 2. **安裝**：
-    * 解壓縮 `nanobrowser.zip`。
+    * 解壓縮 `alphascout.zip`。
     * 在 Chrome 中開啟 `chrome://extensions/`
     * 啟用 `開發人員模式` (右上角)
     * 按一下 `載入未封裝的擴充功能` (左上角)
-    * 選擇已解壓縮的 `nanobrowser` 資料夾。
+    * 選擇已解壓縮的 `alphascout` 資料夾。
 
 3. **設定代理模型**
     * 按一下工具列中的 AlphaScout 圖示以開啟側邊面板
@@ -97,7 +97,7 @@ AlphaScout 是一款在瀏覽器中執行的開放原始碼 AI 網頁自動化�
     * 為不同代理 (Navigator、Planner) 選擇要使用的模型。
 
 4. **升級**：
-    * 從版本頁面下載最新的 `nanobrowser.zip` 檔案。
+    * 從版本頁面下載最新的 `alphascout.zip` 檔案。
     * 解壓縮並用新檔案覆寫您現有的 AlphaScout 檔案。
     * 前往 Chrome 的 `chrome://extensions/` 頁面，然後在 AlphaScout 卡片上按一下重新整理圖示。
 
@@ -111,8 +111,8 @@ AlphaScout 是一款在瀏覽器中執行的開放原始碼 AI 網頁自動化�
 
 2. **複製儲存庫**：
    ```bash
-   git clone https://github.com/nanobrowser/nanobrowser.git
-   cd nanobrowser
+   git clone https://github.com/alphasine/AlphaScout.git
+   cd AlphaScout
    ```
 
 3. **安裝相依套件**：
@@ -193,7 +193,7 @@ AlphaScout 允許您為每個代理設定不同的 LLM 模型，以平衡效能�
 
 我們正積極開發 AlphaScout，未來將有更多令人期待的功能推出，歡迎加入我們！
 
-請至我們的 [GitHub Discussions](https://github.com/nanobrowser/nanobrowser/discussions/85) 查看詳細的發展藍圖與即將推出的功能。
+請至我們的 [GitHub Discussions](https://github.com/alphasine/AlphaScout/discussions/85) 查看詳細的發展藍圖與即將推出的功能。
 
 ## 🤝 如何貢獻
 
@@ -216,7 +216,7 @@ AlphaScout 允許您為每個代理設定不同的 LLM 模型，以平衡效能�
 
 如果您發現安全漏洞，請**不要**透過 Issues、Pull Request 或 Discussions 公開揭露。
 
-請建立一個 [GitHub Security Advisory](https://github.com/nanobrowser/nanobrowser/security/advisories/new) 來負責任地回報此漏洞。這讓我們能在漏洞被公開之前解決問題。
+請建立一個 [GitHub Security Advisory](https://github.com/alphasine/AlphaScout/security/advisories/new) 來負責任地回報此漏洞。這讓我們能在漏洞被公開之前解決問題。
 
 我們感謝您協助維護 AlphaScout 及其使用者的安全！
 
@@ -225,8 +225,8 @@ AlphaScout 允許您為每個代理設定不同的 LLM 模型，以平衡效能�
 歡迎加入我們持續成長的開發者與使用者社群：
 
 - [Discord](https://discord.gg/NN3ABHggMK) - 與團隊及社群成員交流
-- [Twitter](https://x.com/nanobrowser_ai) - 追蹤最新的更新與公告
-- [GitHub Discussions](https://github.com/nanobrowser/nanobrowser/discussions) - 分享您的想法並提出問題
+- [Twitter](https://x.com/alphasine) - 追蹤最新的更新與公告
+- [GitHub Discussions](https://github.com/alphasine/AlphaScout/discussions) - 分享您的想法並提出問題
 
 ## 👏 致謝
 
@@ -245,7 +245,7 @@ AlphaScout 的開發建立在許多優秀的開放原始碼專案之上：
 
 由 AlphaScout 團隊用 ❤️ 打造。
 
-喜歡 AlphaScout 嗎？請給我們一顆星星 🌟 並加入我們的 [Discord](https://discord.gg/NN3ABHggMK) | [X](https://x.com/nanobrowser_ai)
+喜歡 AlphaScout 嗎？請給我們一顆星星 🌟 並加入我們的 [Discord](https://discord.gg/NN3ABHggMK) | [X](https://x.com/alphasine)
 
 ## ⚠️ 衍生專案免責聲明
 
