@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="./chrome-extension/public/banner.png" height="100" width="475" alt="banner" /><br>
+    <img src="./chrome-extension/public/banner.png" height="100" width="875" alt="banner" /><br>
 </h1>
 
 
