@@ -61,7 +61,9 @@ const Options = () => {
 
   return (
     <div
-      className={`flex min-h-screen min-w-[768px] ${isDarkMode ? 'bg-slate-900' : "bg-[url('/bg.jpg')] bg-cover bg-center"} ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
+      className={`flex min-h-screen min-w-[768px] ${
+        isDarkMode ? "bg-[url('/bg-dark.jpg')] bg-cover bg-center" : "bg-[url('/bg.jpg')] bg-cover bg-center"
+      } ${isDarkMode ? 'text-gray-200' : 'text-gray-900'}`}>
       {/* Vertical Navigation Bar */}
       <nav
         className={`w-48 border-r ${isDarkMode ? 'border-slate-700 bg-slate-800/80' : 'border-white/20 bg-[#0EA5E9]/10'} backdrop-blur-sm`}>

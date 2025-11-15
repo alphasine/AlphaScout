@@ -89,20 +89,15 @@ export abstract class BaseAgent<T extends z.ZodType, M = unknown> {
 
   // Set whether to use structured output based on the model name
   private setWithStructuredOutput(): boolean {
+    // DeepSeek "reasoning" models don't behave well with structured output,
+    // so we always fall back to manual JSON extraction for them.
     if (this.modelName === 'deepseek-reasoner' || this.modelName === 'deepseek-r1') {
       return false;
     }
 
-    // Google Gemini models return markdown-wrapped JSON even with structured output
-    // This applies to both native Google AI SDK and OpenAI-compatible endpoints
-    // Check model name for 'gemini' to catch all variants (gemini-2.5-pro, gemini-1.5-pro, etc.)
-    if (this.chatModelLibrary === 'ChatGoogleGenerativeAI' || this.modelName.toLowerCase().includes('gemini')) {
-      logger.debug(
-        `[${this.modelName}] Google Gemini models return markdown-wrapped JSON, using manual JSON extraction`,
-      );
-      return false;
-    }
-
+    // All other models (including Gemini and Groq) should use structured
+    // output. The base invoke() implementation already has a robust fallback
+    // that can extract JSON from markdown-wrapped responses when needed.
     return true;
   }
 

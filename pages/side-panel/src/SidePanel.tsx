@@ -762,6 +762,17 @@ const SidePanel = () => {
     }
   };
 
+  const handleBookmarkUpdate = async (id: number, title: string, content: string) => {
+    try {
+      await favoritesStorage.updatePrompt(id, title, content);
+
+      const prompts = await favoritesStorage.getAllPrompts();
+      setFavoritePrompts(prompts);
+    } catch (error) {
+      console.error('Failed to update favorite prompt:', error);
+    }
+  };
+
   const handleBookmarkUpdateTitle = async (id: number, title: string) => {
     try {
       await favoritesStorage.updatePromptTitle(id, title);
@@ -796,6 +807,16 @@ const SidePanel = () => {
       setFavoritePrompts(updatedPromptsFromStorage);
     } catch (error) {
       console.error('Failed to reorder favorite prompts:', error);
+    }
+  };
+
+  const handleBookmarkAdd = async () => {
+    try {
+      await favoritesStorage.addPrompt('New quick start', '');
+      const prompts = await favoritesStorage.getAllPrompts();
+      setFavoritePrompts(prompts);
+    } catch (error) {
+      console.error('Failed to add favorite prompt:', error);
     }
   };
 
@@ -1002,7 +1023,9 @@ const SidePanel = () => {
   return (
     <div>
       <div
-        className={`flex h-screen flex-col ${isDarkMode ? 'bg-slate-900' : "bg-[url('/bg.jpg')] bg-cover bg-no-repeat"} overflow-hidden border ${isDarkMode ? 'border-sky-800' : 'border-[rgb(186,230,253)]'} rounded-2xl`}>
+        className={`flex h-screen flex-col ${
+          isDarkMode ? "bg-[url('/bg-dark.jpg')] bg-cover bg-no-repeat" : "bg-[url('/bg.jpg')] bg-cover bg-no-repeat"
+        } overflow-hidden border ${isDarkMode ? 'border-sky-800' : 'border-[rgb(186,230,253)]'} rounded-2xl`}>
         <header className="header relative">
           <div className="header-logo">
             {showHistory ? (
@@ -1147,9 +1170,11 @@ const SidePanel = () => {
                       <BookmarkList
                         bookmarks={favoritePrompts}
                         onBookmarkSelect={handleBookmarkSelect}
+                        onBookmarkUpdate={handleBookmarkUpdate}
                         onBookmarkUpdateTitle={handleBookmarkUpdateTitle}
                         onBookmarkDelete={handleBookmarkDelete}
                         onBookmarkReorder={handleBookmarkReorder}
+                        onBookmarkAdd={handleBookmarkAdd}
                         isDarkMode={isDarkMode}
                       />
                     </div>

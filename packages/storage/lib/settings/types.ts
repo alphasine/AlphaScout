@@ -32,7 +32,13 @@ export function isSupportedProviderType(value: unknown): value is SupportedProvi
 
 // Default supported models for each built-in provider
 export const llmProviderModelNames: Record<SupportedProviderType, string[]> = {
-  [ProviderTypeEnum.Gemini]: ['gemini-2.5-flash', 'gemini-2.5-pro'],
+  [ProviderTypeEnum.Gemini]: [
+    'gemini-2.5-pro',
+    'gemini-2.5-flash',
+    'gemini-2.5-flash-lite',
+    'gemini-2.0-flash',
+    'gemini-2.0-flash-lite',
+  ],
   [ProviderTypeEnum.Groq]: ['llama-3.3-70b-versatile'],
   // Custom OpenAI providers don't have predefined models as they are user-defined
 };

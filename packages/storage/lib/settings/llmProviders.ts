@@ -103,7 +103,13 @@ function ensureBackwardCompatibility(providerId: string, config: ProviderConfig)
     ? updatedConfig.type
     : getProviderTypeByProviderId(providerId);
   updatedConfig.type = normalizedType;
-  updatedConfig.modelNames = [...(llmProviderModelNames[normalizedType] || [])];
+
+  // Preserve any explicitly configured modelNames; only fall back to defaults
+  // when none are present. This allows the Options UI to add custom models
+  // (e.g., new Gemini variants) and have them appear in the model dropdown.
+  if (!updatedConfig.modelNames || updatedConfig.modelNames.length === 0) {
+    updatedConfig.modelNames = [...(llmProviderModelNames[normalizedType] || [])];
+  }
 
   if (!updatedConfig.createdAt) {
     updatedConfig.createdAt = Date.now();

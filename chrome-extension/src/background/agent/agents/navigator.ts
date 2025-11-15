@@ -113,22 +113,25 @@ export class NavigatorAgent extends BaseAgent<z.ZodType, NavigatorResult> {
           throw error;
         }
 
-        // Try to extract JSON from markdown code blocks if parsing failed
+        // Try to extract JSON from markdown / raw content if parsing failed.
+        // This is especially important for providers like Gemini that may
+        // wrap structured output in markdown even when using tools.
         const errorMessage = error instanceof Error ? error.message : String(error);
-        if (errorMessage.includes('is not valid JSON') && response?.raw?.content) {
+        if (response?.raw?.content) {
           try {
-            const content =
+            const rawContent =
               typeof response.raw.content === 'string' ? response.raw.content : JSON.stringify(response.raw.content);
-            // Remove markdown code blocks
-            const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
-            if (jsonMatch) {
-              const extractedJson = JSON.parse(jsonMatch[1].trim());
-              const validated = this.modelOutputSchema.parse(extractedJson);
-              logger.info('Successfully extracted JSON from markdown code block');
-              return validated;
-            }
+
+            // Prefer JSON from a ```json ``` code block if present
+            const jsonMatch = rawContent.match(/```(?:json)?\s*([\s\S]*?)```/);
+            const jsonString = jsonMatch ? jsonMatch[1].trim() : rawContent.trim();
+
+            const extracted = JSON.parse(jsonString);
+            const validated = this.modelOutputSchema.parse(extracted);
+            logger.info('Successfully recovered navigator output from raw structured response');
+            return validated;
           } catch (extractError) {
-            logger.error('Failed to extract JSON from markdown:', extractError);
+            logger.error('Failed to extract JSON from raw structured response:', extractError);
           }
         }
 

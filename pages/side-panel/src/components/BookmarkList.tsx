@@ -12,34 +12,46 @@ interface Bookmark {
 interface BookmarkListProps {
   bookmarks: Bookmark[];
   onBookmarkSelect: (content: string) => void;
+  onBookmarkUpdate?: (id: number, title: string, content: string) => void;
   onBookmarkUpdateTitle?: (id: number, title: string) => void;
   onBookmarkDelete?: (id: number) => void;
   onBookmarkReorder?: (draggedId: number, targetId: number) => void;
+  onBookmarkAdd?: () => void;
   isDarkMode?: boolean;
 }
 
 const BookmarkList: React.FC<BookmarkListProps> = ({
   bookmarks,
   onBookmarkSelect,
+  onBookmarkUpdate,
   onBookmarkUpdateTitle,
   onBookmarkDelete,
   onBookmarkReorder,
+  onBookmarkAdd,
   isDarkMode = false,
 }) => {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState<string>('');
+  const [editContent, setEditContent] = useState<string>('');
   const [draggedId, setDraggedId] = useState<number | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleEditClick = (bookmark: Bookmark) => {
     setEditingId(bookmark.id);
     setEditTitle(bookmark.title);
+    setEditContent(bookmark.content);
   };
 
   const handleSaveEdit = (id: number) => {
-    if (onBookmarkUpdateTitle && editTitle.trim()) {
-      onBookmarkUpdateTitle(id, editTitle);
+    const trimmedTitle = editTitle.trim();
+    const trimmedContent = editContent.trim();
+
+    if (onBookmarkUpdate && trimmedTitle) {
+      onBookmarkUpdate(id, trimmedTitle, trimmedContent);
+    } else if (onBookmarkUpdateTitle && trimmedTitle) {
+      onBookmarkUpdateTitle(id, trimmedTitle);
     }
+
     setEditingId(null);
   };
 
@@ -82,9 +94,21 @@ const BookmarkList: React.FC<BookmarkListProps> = ({
 
   return (
     <div className="p-2">
-      <h3 className={`mb-3 text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-        {t('chat_bookmarks_header')}
-      </h3>
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className={`text-sm font-medium ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
+          {t('chat_bookmarks_header')}
+        </h3>
+        {onBookmarkAdd && (
+          <button
+            type="button"
+            onClick={onBookmarkAdd}
+            className={`rounded px-2 py-1 text-xs font-medium ${
+              isDarkMode ? 'bg-slate-800 text-sky-300 hover:bg-slate-700' : 'bg-sky-50 text-sky-700 hover:bg-sky-100'
+            }`}>
+            + Add
+          </button>
+        )}
+      </div>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {bookmarks.map(bookmark => (
           <div
@@ -98,38 +122,49 @@ const BookmarkList: React.FC<BookmarkListProps> = ({
               isDarkMode ? 'bg-slate-800 hover:bg-slate-700' : 'bg-white hover:bg-sky-50'
             } border ${isDarkMode ? 'border-slate-700' : 'border-sky-100'}`}>
             {editingId === bookmark.id ? (
-              <div className="flex items-center">
+              <div className="space-y-2">
                 <input
                   ref={inputRef}
                   type="text"
                   value={editTitle}
                   onChange={e => setEditTitle(e.target.value)}
-                  className={`mr-2 grow rounded px-2 py-1 text-sm ${
+                  placeholder="Quick start title"
+                  className={`w-full rounded px-2 py-1 text-sm ${
                     isDarkMode ? 'border-slate-600 bg-slate-700 text-gray-200' : 'border-sky-100 bg-white text-gray-700'
                   } border`}
                 />
-                <button
-                  onClick={() => handleSaveEdit(bookmark.id)}
-                  className={`rounded p-1 ${
-                    isDarkMode
-                      ? 'bg-slate-700 text-green-400 hover:bg-slate-600'
-                      : 'bg-white text-green-500 hover:bg-gray-100'
-                  }`}
-                  aria-label={t('chat_bookmarks_saveEdit')}
-                  type="button">
-                  <FaCheck size={14} />
-                </button>
-                <button
-                  onClick={handleCancelEdit}
-                  className={`ml-1 rounded p-1 ${
-                    isDarkMode
-                      ? 'bg-slate-700 text-red-400 hover:bg-slate-600'
-                      : 'bg-white text-red-500 hover:bg-gray-100'
-                  }`}
-                  aria-label={t('chat_bookmarks_cancelEdit')}
-                  type="button">
-                  <FaTimes size={14} />
-                </button>
+                <textarea
+                  value={editContent}
+                  onChange={e => setEditContent(e.target.value)}
+                  placeholder="Task or instructions for this quick start"
+                  className={`h-20 w-full resize-none rounded px-2 py-1 text-xs ${
+                    isDarkMode ? 'border-slate-600 bg-slate-700 text-gray-200' : 'border-sky-100 bg-white text-gray-700'
+                  } border`}
+                />
+                <div className="flex justify-end space-x-1">
+                  <button
+                    onClick={() => handleSaveEdit(bookmark.id)}
+                    className={`rounded px-2 py-1 text-xs ${
+                      isDarkMode
+                        ? 'bg-slate-700 text-green-400 hover:bg-slate-600'
+                        : 'bg-white text-green-500 hover:bg-gray-100'
+                    }`}
+                    aria-label={t('chat_bookmarks_saveEdit')}
+                    type="button">
+                    <FaCheck size={14} />
+                  </button>
+                  <button
+                    onClick={handleCancelEdit}
+                    className={`rounded px-2 py-1 text-xs ${
+                      isDarkMode
+                        ? 'bg-slate-700 text-red-400 hover:bg-slate-600'
+                        : 'bg-white text-red-500 hover:bg-gray-100'
+                    }`}
+                    aria-label={t('chat_bookmarks_cancelEdit')}
+                    type="button">
+                    <FaTimes size={14} />
+                  </button>
+                </div>
               </div>
             ) : (
               <>

@@ -1,43 +1,346 @@
-# AlphaScout Build Plan (Code & Test First)
+# AlphaScout – Interactive Steering & ThinkingAgent Orchestration PRD
 
-> Goal: trim/clean code, lock functionality, run `pnpm install` + `pnpm build`, then later handle GitHub publish + final branding assets/links.
+> Goal: Let users steer the agent while a task is running, and introduce a meta **ThinkingAgent** that sits above Planner and Navigator. ThinkingAgent decides when to call Planner, when to execute with Navigator, when a task is truly done, and when to pause and ask the user for clarification.
 
-## Phase 1 – Code cleanup & prep *(completed)*
-- [x] Remove unused providers from core storage logic so only Gemini + Groq remain.
-- [x] Refactor `chrome-extension/src/background/agent/helper.ts` and SDK imports to reflect the reduced providers.
-- [x] Simplify side panel + options UI to show only Gemini/Groq configuration, removing legacy components.
-- [x] Trim analytics defaults and ensure analytics service matches the new setup.
-- [x] Update speech-to-text flow to be Gemini-only.
-- [x] Remove stale assets/config references that won’t ship with AlphaScout.
+---
 
-## Phase 2 – Configuration sanity checks *(completed)*
-- [x] Rename package metadata, manifests, and build configs to “AlphaScout”.
-- [x] Sweep `_locales/**`, storage defaults, and UI strings for lingering Nanobrowser mentions.
-- [x] Confirm workspace scripts (`pnpm`, `update_version.sh`, Turbo) run without assuming a published repo.
+## 1. Background & Motivation
 
-## Phase 3 – Install & build verification *(completed)*
-- [x] `pnpm install`, `pnpm lint`, `pnpm type-check` validated on the Windows environment.
-- [x] `pnpm build` produces dist bundles; extension loads in Chrome with Gemini/Groq options only.
+Current behavior:
+- The user submits a task from the side panel.
+- `Executor` directly orchestrates `PlannerAgent` (strategy) and `NavigatorAgent` (execution) until the task finishes, fails, or is cancelled.
+- While a task is running:
+  - The chat input is disabled.
+  - The user can only hit Stop.
+  - Planner/Navigator cannot proactively ask the user for decisions or clarifications.
+- Errors like JSON parse failures, ambiguous instructions, or repeated action failures can lead to hard failure states without user intervention.
 
-## Phase 4 – Ready-for-branding + release packaging
-- [ ] **GitHub repo prep**
-  - [x] Update `package.json` `repository`/`bugs`/`homepage` fields to point to `alphasine/alphascout`.
-  - [x] Refresh README/CLAUDE/AGENTS/CONTRIBUTING copy for AlphaScout (TBD store link placeholder remains until live).
-  - [x] Create `.github/ISSUE_TEMPLATE` files and keep contributor guidance synced with the Gemini/Groq limitation.
-- [ ] **Asset & store readiness**
-  - [x] Produce AlphaScout icon set (32/128 PNG + promo imagery). **Done:** replaced `Icon-32.png`/`Icon-128.png` after following `docs/ASSET_GUIDE.md`; remember to keep layered sources handy for future tweaks.
-  - [ ] Capture updated screenshots/GIF for README and Chrome Web Store + finalize listing text. **You do:** instructions and copy outline live in `docs/ASSET_GUIDE.md`; save outputs under `docs/assets/`.
-- [ ] **Release documentation**
-  - [x] `CHANGELOG.md` entry summarizing the rebrand/provider cleanup.
-  - [x] `docs/RELEASE.md` created with the full release checklist.
-  - [x] Announcement talking points captured in `docs/ANNOUNCEMENT_NOTES.md`.
+Problems:
+- The agent can get stuck (e.g. repeated "Could not parse response", invalid actions) with no graceful way to involve the user.
+- The user cannot steer mid-task (change goals, narrow the target, correct misunderstandings).
+- There is no meta-layer that:
+  - Watches Planner/Navigator interaction for loops or inconsistencies.
+  - Validates that a long task is actually complete before returning a final answer.
 
-## Reference – files & folders to review/edit
-- `package.json`, `turbo.json`, workspace `vite.config.mts` files
-- `chrome-extension/manifest.js`, `_locales/**/messages.json`
-- Core docs (for future branding pass): `README*.md`, `AGENTS.md`, `CLAUDE.md`, `PRIVACY.md`, `SECURITY.md`
-- Assets under `chrome-extension/public/`
-- Provider/storage logic: `packages/storage/lib/settings/llmProviders.ts`, `packages/storage/lib/settings/agentModels.ts`
-- Agent helper/services: `chrome-extension/src/background/agent/helper.ts`, `chrome-extension/src/background/services/analytics.ts`, `speechToText.ts`, `background/index.ts`
-- UI workspaces: `pages/options/src/**`, `pages/side-panel/src/**`
-- Scripts: `update_version.sh`, release notes/CHANGELOG (when created)
+We want to evolve the architecture to:
+1. Allow interactive steering while a task is running (chat remains useful).
+2. Add a ThinkingAgent that orchestrates Planner and Navigator and acts as an entry/exit gate for "task done".
+
+---
+
+## 2. High-Level Architecture
+
+### 2.1 Current flow (simplified)
+
+`SidePanel → Executor → (PlannerAgent + NavigatorAgent) → BrowserContext/Page`
+
+- Planner:
+  - Reads the message history and browser state summary.
+  - Produces JSON with `done`, `web_task`, `next_steps`, `final_answer`, etc.
+- Navigator:
+  - Reads browser state and plan context.
+  - Produces an action sequence (click, scroll, go_to_url, etc.) and executes it via Puppeteer.
+- Executor:
+  - Loops steps up to `maxSteps` and `maxFailures`.
+  - Treats Planner's `done = true` as "task complete" and emits `TASK_OK`.
+
+### 2.2 Target flow with ThinkingAgent
+
+`SidePanel → Executor → ThinkingAgent → PlannerAgent → NavigatorAgent → BrowserContext/Page`
+
+Roles:
+- **ThinkingAgent (meta)**
+  - Entry gate: decides when and how to call Planner based on user request, history, and current task state.
+  - Exit gate: judges Planner's "done" against the original task and Navigator history.
+  - Arbitration: when Planner and Navigator appear misaligned or stuck, ThinkingAgent can:
+    - Pause the task.
+    - Ask the user a clarifying question.
+    - Provide feedback back into Planner's context.
+
+- **PlannerAgent (strategy)**
+  - Focused on planning: turning user goals + state into `next_steps` and `done` proposals.
+
+- **NavigatorAgent (execution)**
+  - Focused on concrete actions: turning plan into browser interactions and reporting `done` for its own action sequences.
+
+- **Executor**
+  - Runs the loop and maintains shared `AgentContext`.
+  - Calls ThinkingAgent at key checkpoints and obeys its "what to do next" decision.
+
+---
+
+## 3. User Stories
+
+1. **Mid-task clarification (agent-initiated)**
+   - As a user, when the agent is not sure which product or variant I mean, I want it to pause, ask me a clear question in the chat, and wait for my answer before continuing.
+
+2. **Manual steering (user-initiated)**
+   - As a user, when I see the agent going in the wrong direction (wrong site, wrong tab, wrong filters), I want to interrupt it, send a clarifying message, and let it resume from there without losing context.
+
+3. **Meta validation of "done"**
+   - As a user, when I ask a complex multi-step task ("compare product reviews across Amazon and YouTube"), I want the final result to be validated by a meta-agent that checks whether all requested parts are actually satisfied, not just what Planner thinks.
+
+4. **Error handling with user help**
+   - As a user, when the agent hits technical problems (e.g. repeated navigation failures or JSON parsing issues), I want it to explain what went wrong and ask how to proceed instead of silently failing or looping.
+
+---
+
+## 4. UX / Interaction Design
+
+### 4.1 Agent-initiated pause & question
+
+Triggered when:
+- ThinkingAgent or Executor detects:
+  - Several consecutive Planner/Navigator failures (e.g. `consecutiveFailures` above a threshold).
+  - Obvious mismatch between Planner's claim ("scanned Amazon reviews") and Navigator history (never reached reviews).
+
+Behavior:
+1. Background sets `context.paused = true` via `Executor.pause()` or `ThinkingAgent` requesting a pause.
+2. Emits `Actors.SYSTEM`, `ExecutionState.TASK_PAUSE`, with `data.details` = a human-readable question (e.g. "I am seeing multiple similar products. Which brand do you prefer?").
+3. Side panel:
+   - Shows a System message with that question.
+   - Shows a visible "Agent paused – waiting for your answer" indicator.
+   - Re-enables the input box so the user can reply.
+   - Keeps the Stop button active.
+
+### 4.2 User response & resume
+
+When the user replies while the task is paused:
+- Side panel sends:
+  - `type: 'follow_up_task'`, `task: <user message>`, `taskId: currentSessionId`, `tabId`.
+  - Then `type: 'resume_task'` to unpause.
+- Background:
+  - `Executor.addFollowUpTask()` adds the user message via `MessageManager.addNewTask()`.
+  - `Executor.resume()` sets `context.paused = false`.
+- On the next loop iteration:
+  - ThinkingAgent sees the new user message and decides how to adjust Planner/Navigator behavior.
+
+### 4.3 Manual steering control (user-initiated)
+
+- A "Pause & Steer" button in the side panel, visible while a task is running.
+- When clicked:
+  - Sends `pause_task` to background.
+  - Side panel shows "Agent paused – you can adjust instructions now".
+  - Any user message is sent as `follow_up_task` and then `resume_task`.
+- This gives the user full manual control without restarting the chat session.
+
+### 4.4 ThinkingAgent as exit gate
+
+When Planner sets `done = true` and proposes a `final_answer`:
+- Instead of immediately emitting `TASK_OK`:
+  - Executor calls `ThinkingAgent` with:
+    - Original user task.
+    - Planner's latest JSON (`observation`, `challenges`, `final_answer`, etc.).
+    - A summary of Navigator history (domains visited, critical actions, whether key sections like "reviews" were actually seen).
+- ThinkingAgent returns:
+
+  ```ts
+  interface ThinkingControl {
+    approved: boolean;
+    missingPieces: string;
+    instructionsForPlanner: string;
+    instructionsForNavigator: string;
+  }
+  ```
+
+- If `approved = true`:
+  - Executor emits `TASK_OK` with the (possibly refined) final answer from ThinkingAgent.
+- If `approved = false`:
+  - Executor injects `instructionsForPlanner` as a new message into the Planner context and continues the Planner/Navigator loop until requirements are satisfied or the user intervenes.
+
+---
+
+## 5. Technical Design
+
+### 5.1 ThinkingAgent: interface and schema
+
+**Files (new):**
+- `chrome-extension/src/background/agent/agents/thinking.ts`
+- `chrome-extension/src/background/agent/prompts/thinking.ts`
+
+**Tasks:**
+- Define a Zod schema for ThinkingAgent output, for example:
+
+  ```ts
+  const thinkingOutputSchema = z.object({
+    approved: z.boolean(),
+    missing_pieces: z.string(),
+    instructions_for_planner: z.string(),
+    instructions_for_navigator: z.string(),
+    should_pause_for_user: z.boolean().default(false),
+    question_for_user: z.string().default(''),
+  });
+  ```
+
+- Implement `ThinkingAgent extends BaseAgent<typeof thinkingOutputSchema, ThinkingOutput>`:
+  - System prompt explains its role:
+    - Judge completeness of Planner output vs original task.
+    - Detect inconsistencies with Navigator history.
+    - Decide whether to approve, request further planning, or ask user for input.
+
+### 5.2 Executor: call graph with ThinkingAgent
+
+**File:**
+- `chrome-extension/src/background/agent/executor.ts`
+
+**Tasks:**
+- Instantiate `ThinkingAgent` alongside Planner/Navigator in the constructor, using the same `AgentContext`.
+- Modify `execute()` loop:
+  - For each iteration:
+    1. Navigator executes as today (one step).
+    2. Periodically (every `planningInterval` or when Navigator reports its own `done`):
+       - Call Planner for a new or updated plan.
+       - Call ThinkingAgent with:
+         - Current user task(s).
+         - Latest Planner output.
+         - Summary of Navigator history (e.g., last `AgentStepRecord`).
+       - Interpret `ThinkingOutput`:
+         - If `approved = true` and Planner `done = true`:
+           - Emit `TASK_OK` with ThinkingAgent's refined `final_answer`.
+           - Break loop.
+         - If `should_pause_for_user = true`:
+           - Call `requestUserInput(thinking.question_for_user)` (see 5.3).
+           - Continue loop only after user response.
+         - Otherwise:
+           - Inject `instructions_for_planner` as a new system/human message into `MessageManager`.
+           - Continue Planner/Navigator execution.
+
+### 5.3 Executor helpers for pause, user input, and follow-up
+
+**File:**
+- `chrome-extension/src/background/agent/executor.ts`
+
+**Tasks:**
+- Add helpers:
+
+  ```ts
+  private async requestUserInput(reason: string): Promise<void> { ... }
+  private async applyUserFollowUp(taskText: string): Promise<void> { ... }
+  ```
+
+- `requestUserInput`:
+  - Sets `context.paused = true`.
+  - Emits `Actors.SYSTEM`, `ExecutionState.TASK_PAUSE` with `details = reason`.
+
+- `applyUserFollowUp`:
+  - Calls `addFollowUpTask(taskText)` to insert the user's answer into the message history.
+  - Optionally adds a small marker in memory so ThinkingAgent can see that a user clarification was applied.
+
+### 5.4 Background message handling (pause/resume/follow-up)
+
+**File:**
+- `chrome-extension/src/background/index.ts`
+
+**Tasks:**
+- Ensure the existing handlers behave well during steering:
+  - `pause_task`:
+    - If `currentExecutor` exists, call `executor.pause()` and return `{ type: 'success' }`.
+  - `resume_task`:
+    - If executor exists and is paused, call `executor.resume()` and return `{ type: 'success' }`.
+  - `follow_up_task`:
+    - Always call `currentExecutor.addFollowUpTask(message.task)` (even when paused).
+    - Re-run `execute()` or let the main loop continue, depending on your concurrency model.
+
+### 5.5 Side panel: steering UI updates
+
+**File:**
+- `pages/side-panel/src/SidePanel.tsx`
+
+**Tasks:**
+- In `handleTaskState`:
+  - On `Actors.SYSTEM + ExecutionState.TASK_PAUSE`:
+    - Append a message from System: `data.details`.
+    - Set `inputEnabled = true`.
+    - Set a new `isPaused` flag in state (separate from `isReplaying`).
+  - Optionally handle `TASK_RESUME` with a small "Agent resumed" info message.
+
+- In `handleSendMessage`:
+  - If `isPaused` and a task is running:
+    - Treat the user message as steering:
+      - Send `follow_up_task`.
+      - Then send `resume_task`.
+    - Do not start a new session; reuse `currentSessionId`.
+
+- Add a "Pause/Steer" button in the header when `showStopButton` is true:
+  - On click:
+    - Send `pause_task`.
+    - Set `isPaused = true` in state.
+
+### 5.6 Planner/Navigator: error signaling to ThinkingAgent
+
+**Files:**
+- `chrome-extension/src/background/agent/agents/planner.ts`
+- `chrome-extension/src/background/agent/agents/navigator.ts`
+
+**Tasks:**
+- Introduce a new error class, e.g. `UserInputRequiredError`, for conditions where model output is malformed or repeated failures indicate ambiguity rather than pure technical error.
+- When such an error is thrown:
+  - Catch it in `Executor.execute()` and pass the `reason` to ThinkingAgent:
+    - ThinkingAgent can convert it into a more user-friendly question or instructions for Planner.
+  - Optionally call `requestUserInput()` directly when ThinkingAgent is not yet fully wired.
+
+---
+
+## 6. Data & Storage Impact
+
+- No schema changes to existing storage:
+  - Chat history: `chatHistoryStore` remains unchanged.
+  - Favorites / quick start: `favoritesStorage` unchanged.
+  - Settings: unchanged.
+- Steering and meta decisions operate entirely through:
+  - The message history in `MessageManager`.
+  - Events (`AgentEvent`) emitted by agents and consumed by side panel.
+
+---
+
+## 7. Telemetry & Logging
+
+- Add logs for:
+  - When ThinkingAgent is called and its decision (`approved`, `should_pause_for_user`).
+  - When `requestUserInput` is triggered (with reason).
+  - When user steering messages are applied (`applyUserFollowUp`).
+  - Number of pauses and resumes per task.
+
+These logs will help tune ThinkingAgent prompts and error thresholds.
+
+---
+
+## 8. Risks & Mitigations
+
+- **Risk:** User confusion about running vs paused vs done.
+  - Mitigation: Clear status labels in the side panel and distinct messaging when `TASK_PAUSE` or `TASK_RESUME` events occur.
+
+- **Risk:** Overly chatty ThinkingAgent causing too many pauses.
+  - Mitigation: Start with conservative triggers (only call ThinkingAgent on Planner `done = true` or repeated failures) and expand once stable.
+
+- **Risk:** Deadlocks (ThinkingAgent expects user input but user does nothing).
+  - Mitigation: Allow the user to explicitly "Resume anyway" or "Stop task" from UI if stuck in paused state for too long.
+
+---
+
+## 9. Implementation Milestones
+
+1. **Phase 1 – Steering wiring (no ThinkingAgent yet)**
+   - [ ] Finalize `pause_task`, `resume_task`, `follow_up_task` handling in background.
+   - [ ] Implement `requestUserInput` and `applyUserFollowUp` in `Executor`.
+   - [ ] Update side panel to:
+     - Handle `TASK_PAUSE`.
+     - Provide a "Pause/Steer" button.
+     - Send follow-up + resume when user replies during a pause.
+
+2. **Phase 2 – ThinkingAgent as exit gate**
+   - [ ] Implement `ThinkingAgent` and its prompt/schema.
+   - [ ] Call ThinkingAgent when Planner sets `done = true`.
+   - [ ] Use `approved` / `missing_pieces` to either finalize or feed corrections back into Planner.
+
+3. **Phase 3 – Meta-orchestration**
+   - [ ] Call ThinkingAgent periodically (e.g. every few Planner runs) with summaries of Planner/Navigator history.
+   - [ ] Allow ThinkingAgent to recommend pauses, questions for user, or revised instructions for Planner/Navigator.
+
+4. **Phase 4 – Polish & Docs**
+   - [ ] Add logging and tune thresholds for pauses and meta checks.
+   - [ ] Update README/docs to explain:
+     - Steering capabilities.
+     - How ThinkingAgent validates long tasks.
+   - [ ] Gather feedback and iterate on prompts/behavior.
+

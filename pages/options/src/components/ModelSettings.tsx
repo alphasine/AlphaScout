@@ -202,10 +202,7 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as HTMLElement | null;
-      if (
-        isProviderSelectorOpen &&
-        (!target || !target.closest('[data-provider-selector-container="true"]'))
-      ) {
+      if (isProviderSelectorOpen && (!target || !target.closest('[data-provider-selector-container="true"]'))) {
         setIsProviderSelectorOpen(false);
       }
     };
@@ -226,6 +223,38 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
 
       // Only use providers that are actually in storage
       for (const [provider, config] of Object.entries(storedProviders)) {
+        // Try to dynamically fetch Gemini models when possible
+        if (config.type === ProviderTypeEnum.Gemini && config.apiKey) {
+          try {
+            const resp = await fetch(
+              `https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(config.apiKey)}`,
+            );
+
+            if (resp.ok) {
+              const data = (await resp.json()) as { models?: Array<{ name?: string }> };
+              const dynamicModels =
+                data.models
+                  ?.map(m => (m.name && m.name.startsWith('models/') ? m.name.slice('models/'.length) : m.name))
+                  .filter((name): name is string => !!name) ?? [];
+
+              if (dynamicModels.length > 0) {
+                models.push(
+                  ...dynamicModels.map(modelName => ({
+                    provider,
+                    providerName: config.name || provider,
+                    model: modelName,
+                  })),
+                );
+                // Skip static handling for this provider; we already added dynamic models
+                continue;
+              }
+            }
+          } catch (error) {
+            console.error('Error fetching Gemini models, falling back to static list:', error);
+            // Fall through to static handling below
+          }
+        }
+
         if (config.type === ProviderTypeEnum.AzureOpenAI) {
           // Handle Azure providers specially - use deployment names as models
           const deploymentNames = config.azureDeploymentNames || [];
@@ -1433,7 +1462,6 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
                         </div>
                       </div>
                     )}
-
                   </div>
 
                   {/* Add divider except for the last item */}
