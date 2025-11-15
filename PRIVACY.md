@@ -2,11 +2,11 @@
 
 ## Introduction
 
-[AlphaScout](https://github.com/nanobrowser/nanobrowser) is an open-source AI web automation Chrome extension. This Privacy Policy explains how we handle your data and protect your privacy.
+[AlphaScout](https://github.com/alphasine/AlphaScout) is an open-source AI web automation Chrome extension. This Privacy Policy explains how we handle your data and protect your privacy.
 
 ## Open Source
 
-AlphaScout is licensed under Apache License 2.0. All source code is publicly available in our [GitHub repository](https://github.com/nanobrowser/nanobrowser), ensuring complete transparency.
+AlphaScout is licensed under Apache License 2.0. All source code is publicly available in our [GitHub repository](https://github.com/alphasine/AlphaScout), ensuring complete transparency.
 
 ## Data Collection and Processing
 
