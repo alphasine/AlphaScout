@@ -16,6 +16,7 @@ import {
   AgentNameEnum,
   llmProviderModelNames,
   ProviderTypeEnum,
+  SUPPORTED_PROVIDER_TYPES,
   getDefaultDisplayNameFromProviderId,
   getDefaultProviderConfig,
   getDefaultAgentModelParams,
@@ -200,8 +201,11 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
   // Add a click outside handler to close the dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      const target = event.target as HTMLElement;
-      if (isProviderSelectorOpen && !target.closest('.provider-selector-container')) {
+      const target = event.target as HTMLElement | null;
+      if (
+        isProviderSelectorOpen &&
+        (!target || !target.closest('[data-provider-selector-container="true"]'))
+      ) {
         setIsProviderSelectorOpen(false);
       }
     };
@@ -878,50 +882,6 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
     }
   };
 
-  const getMaxCustomProviderNumber = () => {
-    let maxNumber = 0;
-    for (const providerId of Object.keys(providers)) {
-      if (providerId.startsWith('custom_openai_')) {
-        const match = providerId.match(/custom_openai_(\d+)/);
-        if (match) {
-          const number = Number.parseInt(match[1], 10);
-          maxNumber = Math.max(maxNumber, number);
-        }
-      }
-    }
-    return maxNumber;
-  };
-
-  const addCustomProvider = () => {
-    const nextNumber = getMaxCustomProviderNumber() + 1;
-    const providerId = `custom_openai_${nextNumber}`;
-
-    setProviders(prev => ({
-      ...prev,
-      [providerId]: {
-        apiKey: '',
-        name: `CustomProvider${nextNumber}`,
-        type: ProviderTypeEnum.CustomOpenAI,
-        baseUrl: '',
-        modelNames: [],
-        createdAt: Date.now(),
-      },
-    }));
-
-    setModifiedProviders(prev => new Set(prev).add(providerId));
-
-    // Set the newly added provider ref
-    newlyAddedProviderRef.current = providerId;
-
-    // Scroll to the newly added provider after render
-    setTimeout(() => {
-      const providerElement = document.getElementById(`provider-${providerId}`);
-      if (providerElement) {
-        providerElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }, 100);
-  };
-
   const addBuiltInProvider = (provider: string) => {
     // Get the default provider configuration
     const config = getDefaultProviderConfig(provider);
@@ -1008,57 +968,8 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
   };
 
   const handleProviderSelection = (providerType: string) => {
-    // Close the dropdown immediately
     setIsProviderSelectorOpen(false);
-
-    // Handle custom provider
-    if (providerType === ProviderTypeEnum.CustomOpenAI) {
-      addCustomProvider();
-      return;
-    }
-
-    // Handle Azure OpenAI specially to allow multiple instances
-    if (providerType === ProviderTypeEnum.AzureOpenAI) {
-      addAzureProvider();
-      return;
-    }
-
-    // Handle built-in supported providers
     addBuiltInProvider(providerType);
-  };
-
-  // New function to add Azure providers with unique IDs
-  const addAzureProvider = () => {
-    // Count existing Azure providers
-    const azureProviders = Object.keys(providers).filter(
-      key => key === ProviderTypeEnum.AzureOpenAI || key.startsWith(`${ProviderTypeEnum.AzureOpenAI}_`),
-    );
-    const nextNumber = azureProviders.length + 1;
-
-    // Create unique ID
-    const providerId =
-      nextNumber === 1 ? ProviderTypeEnum.AzureOpenAI : `${ProviderTypeEnum.AzureOpenAI}_${nextNumber}`;
-
-    // Create config with appropriate name
-    const config = getDefaultProviderConfig(ProviderTypeEnum.AzureOpenAI);
-    config.name = `Azure OpenAI ${nextNumber}`;
-
-    // Add to providers
-    setProviders(prev => ({
-      ...prev,
-      [providerId]: config,
-    }));
-
-    setModifiedProviders(prev => new Set(prev).add(providerId));
-    newlyAddedProviderRef.current = providerId;
-
-    // Scroll to the newly added provider after render
-    setTimeout(() => {
-      const providerElement = document.getElementById(`provider-${providerId}`);
-      if (providerElement) {
-        providerElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }, 100);
   };
 
   // Add and remove Azure deployments
@@ -1523,29 +1434,6 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
                       </div>
                     )}
 
-                    {/* Ollama reminder at the bottom of the section */}
-                    {providerConfig.type === ProviderTypeEnum.Ollama && (
-                      <div
-                        className={`mt-4 rounded-md border ${isDarkMode ? 'border-slate-600 bg-slate-700' : 'border-blue-100 bg-blue-50'} p-3`}>
-                        <p className={`text-sm ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>
-                          <strong>
-                            {' '}
-                            <code
-                              className={`rounded italic ${isDarkMode ? 'bg-slate-600 px-1 py-0.5' : 'bg-blue-100 px-1 py-0.5'}`}>
-                              OLLAMA_ORIGINS=chrome-extension://*
-                            </code>{' '}
-                          </strong>
-                          {t('options_models_providers_ollama_reminder')}
-                          <a
-                            href="https://github.com/ollama/ollama/blob/main/docs/faq.md#how-can-i-allow-additional-web-origins-to-access-ollama"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className={`ml-1 ${isDarkMode ? 'text-blue-400 hover:text-blue-300' : 'text-blue-600 hover:text-blue-800'}`}>
-                            {t('options_models_providers_ollama_learnMore')}
-                          </a>
-                        </p>
-                      </div>
-                    )}
                   </div>
 
                   {/* Add divider except for the last item */}
@@ -1558,7 +1446,7 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
           )}
 
           {/* Add Provider button and dropdown */}
-          <div className="provider-selector-container relative pt-4">
+          <div className="relative pt-4" data-provider-selector-container="true">
             <Button
               variant="secondary"
               onClick={() => setIsProviderSelectorOpen(prev => !prev)}
@@ -1579,41 +1467,21 @@ export const ModelSettings = ({ isDarkMode = false }: ModelSettingsProps) => {
                     : 'border-blue-200 bg-white shadow-xl shadow-blue-100/50'
                 }`}>
                 <div className="py-1">
-                  {/* Map through provider types to create buttons */}
-                  {Object.values(ProviderTypeEnum)
-                    // Allow Azure to appear multiple times, but filter out other already added providers
-                    .filter(
-                      type =>
-                        type === ProviderTypeEnum.AzureOpenAI || // Always show Azure
-                        (type !== ProviderTypeEnum.CustomOpenAI &&
-                          !providersFromStorage.has(type) &&
-                          !modifiedProviders.has(type)),
-                    )
-                    .map(type => (
-                      <button
-                        key={type}
-                        type="button"
-                        className={`flex w-full items-center px-4 py-3 text-left text-sm ${
-                          isDarkMode
-                            ? 'text-blue-200 hover:bg-blue-600/30 hover:text-white'
-                            : 'text-blue-700 hover:bg-blue-100 hover:text-blue-800'
-                        } transition-colors duration-150`}
-                        onClick={() => handleProviderSelection(type)}>
-                        <span className="font-medium">{getDefaultDisplayNameFromProviderId(type)}</span>
-                      </button>
-                    ))}
-
-                  {/* Custom provider button (always shown) */}
-                  <button
-                    type="button"
-                    className={`flex w-full items-center px-4 py-3 text-left text-sm ${
-                      isDarkMode
-                        ? 'text-blue-200 hover:bg-blue-600/30 hover:text-white'
-                        : 'text-blue-700 hover:bg-blue-100 hover:text-blue-800'
-                    } transition-colors duration-150`}
-                    onClick={() => handleProviderSelection(ProviderTypeEnum.CustomOpenAI)}>
-                    <span className="font-medium">{t('options_models_providers_openaiCompatible')}</span>
-                  </button>
+                  {SUPPORTED_PROVIDER_TYPES.filter(
+                    type => !providersFromStorage.has(type) && !modifiedProviders.has(type),
+                  ).map(type => (
+                    <button
+                      key={type}
+                      type="button"
+                      className={`flex w-full items-center px-4 py-3 text-left text-sm ${
+                        isDarkMode
+                          ? 'text-blue-200 hover:bg-blue-600/30 hover:text-white'
+                          : 'text-blue-700 hover:bg-blue-100 hover:text-blue-800'
+                      } transition-colors duration-150`}
+                      onClick={() => handleProviderSelection(type)}>
+                      <span className="font-medium">{getDefaultDisplayNameFromProviderId(type)}</span>
+                    </button>
+                  ))}
                 </div>
               </div>
             )}

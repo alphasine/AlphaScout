@@ -1,10 +1,10 @@
 export const LLM_FORBIDDEN_ERROR_MESSAGE =
-  'Access denied (403 Forbidden). Please check:\n\n1. Your API key has the required permissions\n\n2. For Ollama: Set OLLAMA_ORIGINS=chrome-extension://* \nsee https://github.com/ollama/ollama/blob/main/docs/faq.md';
+  'Access denied (403 Forbidden). Please confirm your Gemini or Groq API key is valid and the selected model is enabled for your account.';
 
 export const EXTENSION_CONFLICT_ERROR_MESSAGE = `
   Cannot access a chrome-extension:// URL of different extension.
   
-  This is likely due to conflicting extensions. Please use Nanobrowser in a new profile.`;
+  This is likely due to conflicting extensions. Please use AlphaScout in a new profile.`;
 
 /**
  * Custom error class for chat model authentication errors

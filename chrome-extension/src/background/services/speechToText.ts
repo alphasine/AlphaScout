@@ -25,7 +25,7 @@ export class SpeechToTextService {
       logger.info('Found provider for speech-to-text:', provider ? 'yes' : 'no', provider?.type);
 
       if (!provider || provider.type !== 'gemini') {
-        throw new Error(t('chat_stt_model_notFound'));
+        throw new Error(`${t('chat_stt_model_notFound')} (Gemini providers only)`);
       }
 
       const llm = new ChatGoogleGenerativeAI({

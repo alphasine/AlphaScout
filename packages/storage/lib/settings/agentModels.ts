@@ -1,7 +1,7 @@
 import { StorageEnum } from '../base/enums';
 import { createStorage } from '../base/base';
 import type { BaseStorage } from '../base/types';
-import { AgentNameEnum, llmProviderParameters } from './types';
+import { AgentNameEnum, llmProviderParameters, isSupportedProviderType } from './types';
 
 // Interface for a single model configuration
 export interface ModelConfig {
@@ -43,8 +43,10 @@ function validateModelConfig(config: ModelConfig) {
 }
 
 function getModelParameters(agent: AgentNameEnum, provider: string): Record<string, unknown> {
-  const providerParams = llmProviderParameters[provider as keyof typeof llmProviderParameters]?.[agent];
-  return providerParams ?? { temperature: 0.1, topP: 0.1 };
+  if (isSupportedProviderType(provider)) {
+    return llmProviderParameters[provider][agent];
+  }
+  return { temperature: 0.1, topP: 0.1 };
 }
 
 export const agentModelStore: AgentModelStorage = {

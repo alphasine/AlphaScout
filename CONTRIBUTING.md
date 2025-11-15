@@ -1,6 +1,6 @@
-# Contributing to NanoBrowser
+# Contributing to AlphaScout
 
-We deeply appreciate your interest in contributing to NanoBrowser! Every contribution helps make Nanobrowser more powerful and accessible for everyone.
+We deeply appreciate your interest in contributing to AlphaScout! Every contribution helps make the project more powerful and accessible for everyone.
 
 ## Quick Start
 
@@ -12,6 +12,7 @@ We deeply appreciate your interest in contributing to NanoBrowser! Every contrib
 ## How Can I Contribute?
 
 ### Reporting Bugs
+- Confirm you’re running the latest `main` branch and that your API keys target Gemini or Groq (the only supported providers at the moment).
 - Search existing issues first
 - Include:
   - Clear description

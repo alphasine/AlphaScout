@@ -1,0 +1,43 @@
+# AlphaScout Build Plan (Code & Test First)
+
+> Goal: trim/clean code, lock functionality, run `pnpm install` + `pnpm build`, then later handle GitHub publish + final branding assets/links.
+
+## Phase 1 – Code cleanup & prep *(completed)*
+- [x] Remove unused providers from core storage logic so only Gemini + Groq remain.
+- [x] Refactor `chrome-extension/src/background/agent/helper.ts` and SDK imports to reflect the reduced providers.
+- [x] Simplify side panel + options UI to show only Gemini/Groq configuration, removing legacy components.
+- [x] Trim analytics defaults and ensure analytics service matches the new setup.
+- [x] Update speech-to-text flow to be Gemini-only.
+- [x] Remove stale assets/config references that won’t ship with AlphaScout.
+
+## Phase 2 – Configuration sanity checks *(completed)*
+- [x] Rename package metadata, manifests, and build configs to “AlphaScout”.
+- [x] Sweep `_locales/**`, storage defaults, and UI strings for lingering Nanobrowser mentions.
+- [x] Confirm workspace scripts (`pnpm`, `update_version.sh`, Turbo) run without assuming a published repo.
+
+## Phase 3 – Install & build verification *(completed)*
+- [x] `pnpm install`, `pnpm lint`, `pnpm type-check` validated on the Windows environment.
+- [x] `pnpm build` produces dist bundles; extension loads in Chrome with Gemini/Groq options only.
+
+## Phase 4 – Ready-for-branding + release packaging
+- [ ] **GitHub repo prep**
+  - [x] Update `package.json` `repository`/`bugs`/`homepage` fields to point to `alphasine/alphascout`.
+  - [x] Refresh README/CLAUDE/AGENTS/CONTRIBUTING copy for AlphaScout (TBD store link placeholder remains until live).
+  - [x] Create `.github/ISSUE_TEMPLATE` files and keep contributor guidance synced with the Gemini/Groq limitation.
+- [ ] **Asset & store readiness**
+  - [x] Produce AlphaScout icon set (32/128 PNG + promo imagery). **Done:** replaced `Icon-32.png`/`Icon-128.png` after following `docs/ASSET_GUIDE.md`; remember to keep layered sources handy for future tweaks.
+  - [ ] Capture updated screenshots/GIF for README and Chrome Web Store + finalize listing text. **You do:** instructions and copy outline live in `docs/ASSET_GUIDE.md`; save outputs under `docs/assets/`.
+- [ ] **Release documentation**
+  - [x] `CHANGELOG.md` entry summarizing the rebrand/provider cleanup.
+  - [x] `docs/RELEASE.md` created with the full release checklist.
+  - [x] Announcement talking points captured in `docs/ANNOUNCEMENT_NOTES.md`.
+
+## Reference – files & folders to review/edit
+- `package.json`, `turbo.json`, workspace `vite.config.mts` files
+- `chrome-extension/manifest.js`, `_locales/**/messages.json`
+- Core docs (for future branding pass): `README*.md`, `AGENTS.md`, `CLAUDE.md`, `PRIVACY.md`, `SECURITY.md`
+- Assets under `chrome-extension/public/`
+- Provider/storage logic: `packages/storage/lib/settings/llmProviders.ts`, `packages/storage/lib/settings/agentModels.ts`
+- Agent helper/services: `chrome-extension/src/background/agent/helper.ts`, `chrome-extension/src/background/services/analytics.ts`, `speechToText.ts`, `background/index.ts`
+- UI workspaces: `pages/options/src/**`, `pages/side-panel/src/**`
+- Scripts: `update_version.sh`, release notes/CHANGELOG (when created)
