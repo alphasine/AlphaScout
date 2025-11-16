@@ -26,12 +26,12 @@ export const DEFAULT_GENERAL_SETTINGS: GeneralSettingsConfig = {
   maxSteps: 100,
   maxActionsPerStep: 5,
   maxFailures: 3,
-  useVision: false,
+  useVision: true,
   useVisionForPlanner: false,
   planningInterval: 3,
-  displayHighlights: true,
+  displayHighlights: false,
   minWaitPageLoad: 250,
-  replayHistoricalTasks: false,
+  replayHistoricalTasks: true,
 };
 
 const storage = createStorage<GeneralSettingsConfig>('general-settings', DEFAULT_GENERAL_SETTINGS, {
